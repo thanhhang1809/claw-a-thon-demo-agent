@@ -1,0 +1,5 @@
+greennode-agentbase
+openai
+python-dotenv
+streamlit
+requests
