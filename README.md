@@ -1,33 +1,33 @@
-# claw-a-thon-demo-agent
+# Medieval Story Writer Agent
 
-Local Interview Q&A agent for practicing behavioral, technical, and product interview answers.
+Local/AgentBase agent for writing medieval fantasy stories.
 
 ## Features
 
-- Generates interview questions by category.
-- Scores answers with a lightweight rubric.
-- Highlights matched and missing interview signals.
-- Gives concrete feedback and sample answers.
+- Writes medieval stories from a topic, prompt, or message.
+- Supports tone controls: `epic`, `dark`, `romantic`, and `humorous`.
+- Supports length controls: `short`, `medium`, and `long`.
 - Runs locally without external API keys.
-- Supports LLM-powered coaching on AgentBase with an OpenAI-compatible model.
+- Supports LLM-powered story writing on AgentBase with an OpenAI-compatible model.
 
 ## Quick start
 
 ```bash
-python3 -m interview_agent.cli --category behavioral
+python3 -m medieval_story_agent.cli "mot hiep si di tim vuong mien that lac"
 ```
 
 Try a sample run:
 
 ```bash
-python3 -m interview_agent.cli --category technical --sample
+python3 -m medieval_story_agent.cli "a cursed tower near the winter sea" --tone dark --length short
 ```
 
-Available categories:
+Available tones:
 
-- `behavioral`
-- `technical`
-- `product`
+- `epic`
+- `dark`
+- `romantic`
+- `humorous`
 
 ## Run tests
 
@@ -46,12 +46,15 @@ Example request body:
 
 ```json
 {
-  "category": "technical",
-  "answer": "I would use a token bucket in Redis and monitor latency..."
+  "topic": "mot cong chua gia trai lam hiep si",
+  "tone": "epic",
+  "length": "medium",
+  "protagonist": "cong chua Annelise",
+  "setting": "vuong quoc da trang"
 }
 ```
 
-For LLM coaching, configure:
+For LLM story writing, configure:
 
 ```bash
 LLM_API_KEY=

@@ -3,343 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Coach</title>
+    <title>Medieval Story Writer</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --ink: #1f2328;
+            --muted: #667085;
+            --paper: #fffaf0;
+            --panel: #ffffff;
+            --line: #d9c7a5;
+            --accent: #8f3f2b;
+            --accent-dark: #642b1e;
+            --forest: #274c3a;
+            --gold: #b8862f;
+            --bg: #f4efe4;
+        }
+
+        * { box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            color: var(--ink);
+            font-family: ui-serif, Georgia, "Times New Roman", serif;
+            background:
+                linear-gradient(rgba(42, 32, 21, 0.58), rgba(42, 32, 21, 0.4)),
+                url("https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=1800&q=80");
+            background-attachment: fixed;
+            background-size: cover;
             min-height: 100vh;
-            padding: 20px;
         }
-        .container {
-            max-width: 800px;
+
+        .app {
+            width: min(1180px, calc(100% - 32px));
             margin: 0 auto;
+            padding: 32px 0;
         }
+
+        header {
+            color: white;
+            margin-bottom: 22px;
+        }
+
         h1 {
-            color: white;
+            font-size: clamp(34px, 5vw, 64px);
+            line-height: 1;
+            margin: 0 0 10px;
+            letter-spacing: 0;
+            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+        }
+
+        header p {
+            width: min(720px, 100%);
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 16px;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 360px minmax(0, 1fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .panel {
+            background: rgba(255, 250, 240, 0.96);
+            border: 1px solid rgba(217, 199, 165, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 18px 50px rgba(28, 20, 12, 0.28);
+        }
+
+        .controls {
+            padding: 20px;
+            position: sticky;
+            top: 24px;
+        }
+
+        .story-panel {
+            min-height: 650px;
+            overflow: hidden;
+        }
+
+        .story-toolbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.42);
+        }
+
+        .story-toolbar strong {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 13px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .story {
+            padding: 32px clamp(22px, 5vw, 56px) 44px;
+        }
+
+        .story h2 {
+            margin: 0 0 18px;
+            color: var(--accent-dark);
+            font-size: clamp(28px, 4vw, 48px);
+            line-height: 1.08;
+            letter-spacing: 0;
+        }
+
+        .story-text {
+            white-space: pre-line;
+            font-size: 20px;
+            line-height: 1.82;
+        }
+
+        .empty-state {
+            min-height: 520px;
+            display: grid;
+            place-items: center;
+            padding: 42px;
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            color: var(--muted);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
-        .card {
+
+        .empty-state div {
+            max-width: 440px;
+        }
+
+        .empty-state h2 {
+            margin: 0 0 10px;
+            color: var(--accent-dark);
+            font-family: ui-serif, Georgia, "Times New Roman", serif;
+            font-size: 34px;
+            letter-spacing: 0;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 7px;
+            color: var(--accent-dark);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        textarea,
+        input,
+        select {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 11px 12px;
+            color: var(--ink);
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
-        .sidebar {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
         }
-        select, input, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 15px;
+
+        textarea:focus,
+        input:focus,
+        select:focus {
+            outline: 2px solid rgba(184, 134, 47, 0.24);
+            border-color: var(--gold);
         }
-        select:focus, input:focus, textarea:focus {
-            border-color: #667eea;
-            outline: none;
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
+
         button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
+            border: 0;
+            border-radius: 6px;
+            min-height: 46px;
+            padding: 0 16px;
+            font: 700 15px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             cursor: pointer;
+        }
+
+        .primary {
             width: 100%;
-            font-weight: bold;
-        }
-        button:hover {
-            opacity: 0.9;
-        }
-        button.secondary {
-            background: #e0e0e0;
-            color: #333;
-        }
-        .question-box {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        .category-tag {
-            display: inline-block;
-            background: #673ab7;
+            margin-top: 18px;
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-bottom: 10px;
+            background: var(--accent);
         }
-        .answer-box {
-            background: #fff3e0;
-            border-left: 4px solid #ff9800;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
+
+        .primary:hover { background: var(--accent-dark); }
+        .primary:disabled { opacity: 0.65; cursor: wait; }
+
+        .secondary {
+            color: var(--accent-dark);
+            background: transparent;
+            border: 1px solid var(--line);
         }
-        .feedback-box {
-            background: #e8f5e9;
-            border-left: 4px solid #4caf50;
-            padding: 20px;
-            border-radius: 8px;
+
+        .secondary:hover { background: rgba(217, 199, 165, 0.25); }
+
+        .status {
+            margin-top: 12px;
+            min-height: 20px;
+            color: var(--muted);
+            font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
-        .score {
-            font-size: 2em;
-            font-weight: bold;
-            color: #4caf50;
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 22px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
-        .signals {
-            margin: 10px 0;
+
+        .chip {
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.55);
+            color: var(--muted);
+            font-size: 13px;
         }
-        .signals .matched { color: #4caf50; }
-        .signals .missing { color: #f44336; }
-        .chat-history {
-            max-height: 400px;
-            overflow-y: auto;
+
+        .outline {
+            margin-top: 30px;
+            padding-top: 22px;
+            border-top: 1px solid var(--line);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
-        .message {
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 10px;
+
+        .outline h3 {
+            margin: 0 0 12px;
+            color: var(--forest);
+            font-size: 16px;
         }
-        .message.user {
-            background: #e3f2fd;
-            margin-left: 20px;
+
+        .outline ol {
+            margin: 0;
+            padding-left: 22px;
+            color: var(--muted);
+            line-height: 1.65;
         }
-        .message.assistant {
-            background: #f5f5f5;
-            margin-right: 20px;
+
+        @media (max-width: 860px) {
+            body { background-attachment: scroll; }
+            .app { width: min(100% - 24px, 620px); padding: 22px 0; }
+            .workspace { grid-template-columns: 1fr; }
+            .controls { position: static; }
+            .story-panel { min-height: 520px; }
+            .story-toolbar { align-items: stretch; flex-direction: column; }
+            .secondary { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>💬 Interview Coach</h1>
-        
-        <div class="sidebar">
-            <h3>⚙️ Cài đặt</h3>
-            <select id="category">
-                <option value="behavioral">Behavioral (Hành vi)</option>
-                <option value="technical">Technical (Kỹ thuật)</option>
-                <option value="product">Product (Sản phẩm)</option>
-            </select>
-            
-            <h3>📖 Hướng dẫn</h3>
-            <ol style="margin-left: 20px; color: #666;">
-                <li>Chọn loại câu hỏi</li>
-                <li>Nhấn "Lấy câu hỏi mới"</li>
-                <li>Nhập câu trả lời</li>
-                <li>Nhận phản hồi từ AI</li>
-            </ol>
-            
-            <button class="secondary" onclick="clearHistory()" style="margin-top: 15px;">
-                🗑️ Xóa lịch sử
-            </button>
-        </div>
+    <main class="app">
+        <header>
+            <h1>Medieval Story Writer</h1>
+            <p>Nhập một ý tưởng ngắn, chọn giọng kể và để agent dựng thành truyện thời trung cổ dễ đọc ngay trên trình duyệt.</p>
+        </header>
 
-        <div class="card">
-            <button onclick="getQuestion()" id="questionBtn">📝 Lấy câu hỏi mới</button>
-            
-            <div id="questionArea" style="display: none;">
-                <div class="question-box">
-                    <span class="category-tag" id="questionCategory">BEHAVIORAL</span>
-                    <p id="questionText" style="font-size: 18px; margin-top: 10px;"></p>
-                </div>
-                
-                <textarea id="answer" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
-                <button onclick="submitAnswer()" id="submitBtn">📤 Gửi câu trả lời</button>
-            </div>
-            
-            <div id="loading" style="display: none; text-align: center; padding: 20px;">
-                ⏳ Đang xử lý...
-            </div>
-            
-            <div id="feedbackArea" style="display: none;">
-                <div class="feedback-box">
-                    <h3>✅ Phản hồi</h3>
-                    <p class="score">Điểm: <span id="score">7</span>/10</p>
-                    <div class="signals">
-                        <p>✅ <strong>Đã đề cập:</strong> <span id="matched"></span></p>
-                        <p>❌ <strong>Thiếu:</strong> <span id="missing"></span></p>
+        <section class="workspace">
+            <form class="panel controls" id="storyForm">
+                <label for="topic">Chủ đề truyện</label>
+                <textarea id="topic" name="topic" placeholder="Ví dụ: một công chúa giả trai làm hiệp sĩ để tìm vương miện bị đánh cắp">mot hiep si di tim vuong mien that lac</textarea>
+
+                <div class="field-row">
+                    <div>
+                        <label for="tone">Giọng kể</label>
+                        <select id="tone" name="tone">
+                            <option value="epic">Epic</option>
+                            <option value="dark">Dark</option>
+                            <option value="romantic">Romantic</option>
+                            <option value="humorous">Humorous</option>
+                        </select>
                     </div>
-                    <p><strong>💡 Gợi ý:</strong> <span id="feedback"></span></p>
-                    
-                    <div id="llmFeedback" style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 15px;">
-                        <h4>🌟 Đánh giá từ AI Coach</h4>
-                        <p><strong>Điểm mạnh:</strong> <span id="strengths"></span></p>
-                        <p><strong>Cần cải thiện:</strong> <span id="improvements"></span></p>
-                        <p><strong>💡 Gợi ý:</strong> <span id="suggestion"></span></p>
+                    <div>
+                        <label for="length">Độ dài</label>
+                        <select id="length" name="length">
+                            <option value="short">Short</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="long">Long</option>
+                        </select>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="card">
-            <h3>💭 Lịch sử chat</h3>
-            <div class="chat-history" id="chatHistory"></div>
-        </div>
-    </div>
+                <label for="protagonist">Nhân vật chính</label>
+                <input id="protagonist" name="protagonist" placeholder="Để trống nếu muốn agent tự chọn">
+
+                <label for="setting">Bối cảnh</label>
+                <input id="setting" name="setting" placeholder="Ví dụ: vương quốc đá trắng bên bờ biển mùa đông">
+
+                <label for="language">Ngôn ngữ</label>
+                <select id="language" name="language">
+                    <option value="vi" selected>Tiếng Việt</option>
+                    <option value="en">English</option>
+                </select>
+
+                <button class="primary" id="generateBtn" type="submit">Tạo truyện</button>
+                <div class="status" id="status"></div>
+            </form>
+
+            <article class="panel story-panel">
+                <div class="story-toolbar">
+                    <strong id="modeLabel">Local medieval fantasy agent</strong>
+                    <button class="secondary" id="copyBtn" type="button">Copy truyện</button>
+                </div>
+                <div id="storyOutput" class="empty-state">
+                    <div>
+                        <h2>Sẵn sàng viết truyện</h2>
+                        <p>Điền chủ đề rồi nhấn tạo truyện. Kết quả sẽ hiện ở đây với tiêu đề, nội dung và outline.</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
 
     <script>
-        let currentQuestion = '';
-        
-        async function getQuestion() {
-            const category = document.getElementById('category').value;
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('questionBtn').disabled = true;
-            
+        const form = document.getElementById("storyForm");
+        const button = document.getElementById("generateBtn");
+        const statusBox = document.getElementById("status");
+        const output = document.getElementById("storyOutput");
+        const modeLabel = document.getElementById("modeLabel");
+        const copyBtn = document.getElementById("copyBtn");
+        let latestStoryText = "";
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const payload = Object.fromEntries(new FormData(form).entries());
+            payload.topic = payload.topic.trim();
+
+            if (!payload.topic) {
+                statusBox.textContent = "Bạn cần nhập chủ đề truyện.";
+                return;
+            }
+
+            setLoading(true);
             try {
-                // Call agent API
-                const response = await fetch('/invocations', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({category: category})
+                const response = await fetch("/invocations", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
                 });
-                
+
                 const data = await response.json();
-                currentQuestion = data.question || 'Sample question: Tell me about yourself';
-                
-                document.getElementById('questionCategory').textContent = category.toUpperCase();
-                document.getElementById('questionText').textContent = currentQuestion;
-                document.getElementById('questionArea').style.display = 'block';
-                document.getElementById('feedbackArea').style.display = 'none';
-                document.getElementById('answer').value = '';
-                
-                addToHistory('assistant', 'Câu hỏi (' + category + '):\n' + currentQuestion);
-            } catch (e) {
-                // Demo mode - use sample questions
-                const questions = {
-                    behavioral: [
-                        "Kể về một lần bạn vượt qua khó khăn trong công việc?",
-                        "Mô tả một dự án thành công mà bạn đã lead?",
-                        "Kể về một lần bạn xử lý mâu thuẫn trong team?"
-                    ],
-                    technical: [
-                        "Bạn thiết kế hệ thống như thế nào cho 1 triệu users?",
-                        "Giải thích về database indexing?",
-                        "Khi nào dùng SQL vs NoSQL?"
-                    ],
-                    product: [
-                        "Làm sao để prioritize features?",
-                        "Kể về một sản phẩm bạn đã improve?",
-                        "Làm sao đo lường product success?"
-                    ]
-                };
-                
-                const qs = questions[category] || questions.behavioral;
-                currentQuestion = qs[Math.floor(Math.random() * qs.length)];
-                
-                document.getElementById('questionCategory').textContent = category.toUpperCase();
-                document.getElementById('questionText').textContent = currentQuestion;
-                document.getElementById('questionArea').style.display = 'block';
-                document.getElementById('feedbackArea').style.display = 'none';
-                
-                addToHistory('assistant', 'Câu hỏi (' + category + '):\n' + currentQuestion);
+                if (!response.ok || data.status !== "success") {
+                    throw new Error(data.message || "Không tạo được truyện.");
+                }
+
+                renderStory(data.result, data.llm);
+                statusBox.textContent = "Đã tạo truyện.";
+            } catch (error) {
+                statusBox.textContent = error.message || "Có lỗi xảy ra.";
+            } finally {
+                setLoading(false);
             }
-            
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('questionBtn').disabled = false;
-        }
-        
-        async function submitAnswer() {
-            const answer = document.getElementById('answer').value.trim();
-            if (!answer) return;
-            
-            const category = document.getElementById('category').value;
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('submitBtn').disabled = true;
-            
-            addToHistory('user', answer);
-            
-            try {
-                // Call agent API
-                const response = await fetch('/invocations', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        category: category,
-                        question: currentQuestion,
-                        answer: answer
-                    })
-                });
-                
-                const data = await response.json();
-                showFeedback(data.local_evaluation || {}, data.llm_coaching || {});
-            } catch (e) {
-                // Demo mode
-                const demoFeedback = {
-                    score: Math.floor(5 + Math.random() * 5),
-                    signals_matched: ['Structure', 'Confidence', 'Clarity'],
-                    signals_missing: ['Quantifiable results', 'STAR method'],
-                    feedback: 'Câu trả lời tốt! Hãy sử dụng phương pháp STAR và thêm số liệu cụ thể.',
-                    strengths: ['Trả lời mạch lạc', 'Có kiến thức chuyên môn'],
-                    improvements: ['Thêm ví dụ cụ thể', 'Sử dụng STAR'],
-                    suggestion: 'Kể về một dự án cụ thể với kết quả đo lường được.'
-                };
-                
-                const demoLLM = {
-                    enabled: true,
-                    result: demoFeedback
-                };
-                
-                showFeedback(demoFeedback, demoLLM);
+        });
+
+        copyBtn.addEventListener("click", async () => {
+            if (!latestStoryText) {
+                statusBox.textContent = "Chưa có truyện để copy.";
+                return;
             }
-            
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('submitBtn').disabled = false;
+            await navigator.clipboard.writeText(latestStoryText);
+            statusBox.textContent = "Đã copy truyện.";
+        });
+
+        function setLoading(isLoading) {
+            button.disabled = isLoading;
+            button.textContent = isLoading ? "Đang viết..." : "Tạo truyện";
+            statusBox.textContent = isLoading ? "Agent đang dựng cốt truyện và lời kể." : "";
         }
-        
-        function showFeedback(local, llm) {
-            document.getElementById('questionArea').style.display = 'none';
-            document.getElementById('feedbackArea').style.display = 'block';
-            
-            document.getElementById('score').textContent = local.score || 'N/A';
-            document.getElementById('matched').textContent = (local.signals_matched || []).join(', ');
-            document.getElementById('missing').textContent = (local.signals_missing || []).join(', ');
-            document.getElementById('feedback').textContent = local.feedback || '';
-            
-            if (llm.enabled && llm.result) {
-                document.getElementById('llmFeedback').style.display = 'block';
-                document.getElementById('strengths').textContent = (llm.result.strengths || []).join(', ');
-                document.getElementById('improvements').textContent = (llm.result.improvements || []).join(', ');
-                document.getElementById('suggestion').textContent = llm.result.suggestion || '';
-            } else {
-                document.getElementById('llmFeedback').style.display = 'none';
-            }
-            
-            // Add to history
-            let feedbackText = `Điểm: ${local.score || 'N/A'}\n`;
-            feedbackText += `💡 Gợi ý: ${local.feedback || ''}`;
-            if (llm.enabled && llm.result) {
-                feedbackText += `\n\n🌟 AI Coach:\n- ${(llm.result.strengths || []).join('\n- ')}\n- ${(llm.result.improvements || []).join('\n- ')}`;
-            }
-            addToHistory('assistant', feedbackText);
+
+        function renderStory(result, llm) {
+            const title = result.title || "Truyện Trung Cổ";
+            const story = result.story || "";
+            const outline = Array.isArray(result.outline) ? result.outline : [];
+            const metadata = result.metadata || {};
+            latestStoryText = `${title}\n\n${story}`;
+            modeLabel.textContent = llm && llm.enabled ? `LLM: ${llm.model || "enabled"}` : "Local medieval fantasy agent";
+
+            output.className = "story";
+            output.innerHTML = `
+                <div class="meta">
+                    <span class="chip">${escapeHtml(metadata.genre || "medieval fantasy")}</span>
+                    <span class="chip">${escapeHtml(metadata.tone || "epic")}</span>
+                    <span class="chip">${escapeHtml(metadata.length || "medium")}</span>
+                    <span class="chip">${escapeHtml(metadata.language || "vi")}</span>
+                </div>
+                <h2>${escapeHtml(title)}</h2>
+                <div class="story-text">${escapeHtml(story)}</div>
+                ${outline.length ? renderOutline(outline) : ""}
+            `;
         }
-        
-        function addToHistory(role, content) {
-            const history = document.getElementById('chatHistory');
-            const div = document.createElement('div');
-            div.className = 'message ' + role;
-            div.innerHTML = '<strong>' + (role === 'user' ? '👤 Bạn' : '🤖 AI') + '</strong><br>' + content.replace(/\n/g, '<br>');
-            history.insertBefore(div, history.firstChild);
+
+        function renderOutline(items) {
+            return `
+                <div class="outline">
+                    <h3>Outline</h3>
+                    <ol>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>
+                </div>
+            `;
         }
-        
-        function clearHistory() {
-            document.getElementById('chatHistory').innerHTML = '';
-            document.getElementById('questionArea').style.display = 'none';
-            document.getElementById('feedbackArea').style.display = 'none';
-            currentQuestion = '';
+
+        function escapeHtml(value) {
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
         }
     </script>
 </body>
